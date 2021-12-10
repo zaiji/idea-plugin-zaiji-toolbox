@@ -6,7 +6,6 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.zaiji.plugin.maven.MvnInstallGeneratorToolBox;
-import com.zaiji.plugin.maven.MvnInstallGeneratorToolBox2;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -28,7 +27,6 @@ public class MainToolWindow implements ToolWindowFactory {
 
     private final static Map<String, Class<? extends BaseComponentClass>> COMPONENTS = new HashMap<>(20) {{
         put("mvn install", MvnInstallGeneratorToolBox.class);
-        put("新2335234ll", MvnInstallGeneratorToolBox2.class);
     }};
 
     /**
