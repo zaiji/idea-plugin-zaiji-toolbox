@@ -1,22 +1,21 @@
 <idea-plugin>
-    <id>org.example.idea-plugin-zaiji-toolbox</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <id>com.zaiji.plugin</id>
+    <name>仔鸡的工具箱</name>
+    <vendor email="realzaiji@foxmail.com" url="http://www.mingyuezon.com">zaiji</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>
+        这是仔鸡的工具箱！这是仔鸡的工具箱！这是仔鸡的工具箱！这是仔鸡的工具箱！这是仔鸡的工具箱！这是仔鸡的工具箱！
+    </description>
 
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow factoryClass="com.zaiji.plugin.MainToolWindow"
+                    id="仔鸡的工具箱"
+                    canCloseContents="false" anchor="bottom">
+        </toolWindow>
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
     </actions>
 </idea-plugin>
