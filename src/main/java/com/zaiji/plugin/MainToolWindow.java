@@ -6,6 +6,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.zaiji.plugin.image.ImageToBase64;
 import com.zaiji.plugin.maven.MvnInstallGeneratorToolBox;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,7 @@ import java.util.Map;
 public class MainToolWindow implements ToolWindowFactory {
 
     private final static Map<String, Class<? extends BaseComponentClass>> COMPONENTS = new HashMap<>(20) {{
+        put("图片Base64转换", ImageToBase64.class);
         put("mvn install", MvnInstallGeneratorToolBox.class);
     }};
 
@@ -64,11 +66,12 @@ public class MainToolWindow implements ToolWindowFactory {
                     panelList.add(content);
                     jButton.addActionListener(aaa -> {
                         panelList.forEach(e -> e.setVisible(false));
+                        rightContentJpanel.add(content, BorderLayout.CENTER);
                         content.setVisible(true);
+                        rightContentJpanel.updateUI();
                     });
 
                     leftMenuJpanel.add(horizontalBox);
-                    rightContentJpanel.add(content, BorderLayout.CENTER);
                 } catch (Exception e) {
                     System.out.println("组件：【" + key + "】初始化失败！" + e.getMessage());
                     e.printStackTrace();

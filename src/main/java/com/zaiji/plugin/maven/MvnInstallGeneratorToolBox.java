@@ -1,6 +1,7 @@
 package com.zaiji.plugin.maven;
 
 import com.zaiji.plugin.BaseComponentClass;
+import com.zaiji.plugin.util.ErrorInfoUtil;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
@@ -13,7 +14,6 @@ import java.util.Optional;
 
 public class MvnInstallGeneratorToolBox extends BaseComponentClass {
     private JPanel panel1;
-    private JTabbedPane tabbedPane1;
     private JButton buttonGeneratorPom;
     private JTextArea infoPomTextArea;
     private JTextArea pomResultTextArea;
@@ -22,6 +22,7 @@ public class MvnInstallGeneratorToolBox extends BaseComponentClass {
     private JTextField infoGroudIdTextField;
     private JTextField infoArtifactIdTextField;
     private JTextField infoVersionTextField;
+    private JTabbedPane tabbedPane1;
 
     public MvnInstallGeneratorToolBox() {
         buttonGeneratorPom.addActionListener(e -> pomResultTextArea.setText(generatorCodeByPom()));
@@ -45,7 +46,7 @@ public class MvnInstallGeneratorToolBox extends BaseComponentClass {
 
             return String.join("\r\n", result);
         } catch (Exception e) {
-            return "解析xml失败，请确认数据格式！";
+            return ErrorInfoUtil.outPrintStack("解析xml失败，请确认数据格式！", e);
         }
     }
 
