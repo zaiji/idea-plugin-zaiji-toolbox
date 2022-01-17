@@ -7,6 +7,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.zaiji.plugin.image.ImageToBase64;
+import com.zaiji.plugin.log4j2.Log4j2ConfigFileGenerator;
 import com.zaiji.plugin.maven.MvnInstallGeneratorToolBox;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,7 @@ public class MainToolWindow implements ToolWindowFactory {
     private final static Map<String, Class<? extends BaseComponentClass>> COMPONENTS = new HashMap<>(20) {{
         put("图片Base64转换", ImageToBase64.class);
         put("mvn install", MvnInstallGeneratorToolBox.class);
+        put("log4j2配置文件快速生成", Log4j2ConfigFileGenerator.class);
     }};
 
     /**

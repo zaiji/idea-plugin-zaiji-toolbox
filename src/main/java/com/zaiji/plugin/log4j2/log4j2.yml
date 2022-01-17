@@ -1,0 +1,71 @@
+Configuration:
+  #属性：指定log4j本身的打印日志的级别
+  status: error
+  #属性：指定log4j自动重新配置的监测间隔时间，单位是s,最小是5s
+  monitorinterval: 10
+  #节点：常见的有三种子节点:Console、RollingFile、File
+  appenders:
+    #节点：用来定义输出到控制台的Appender
+    Console:
+      #属性：指定Appender的名字
+      name: ConsoleAppender
+      #属性：SYSTEM_OUT 或 SYSTEM_ERR,一般只设置默认:SYSTEM_OUT
+      target: SYSTEM_OUT
+      #属性：输出格式，不设置默认为:%m%n.
+      PatternLayout:
+        Pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %l ==> %m%n"
+    #节点：用来定义输出到指定位置的文件的Appender
+    File:
+      #属性：指定Appender的名字
+      name: FileAppender
+      #属性：指定输出日志的目的文件带全路径的文件名
+      fileName: /logs/dialogue_1.log
+      #属性：输出格式，不设置默认为:%m%n.
+      PatternLayout:
+        Pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %l ==> %m %n"
+    RollingFile:
+      #属性：指定Appender的名字
+      name: FileAppender
+      #属性：指定输出日志的目的文件带全路径的文件名
+      fileName: SYSTEM_OUT
+      #属性：输出格式，不设置默认为:%m%n.
+      PatternLayout:
+        Pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %l ==> %m %n"
+      #属性：指定新建日志文件的名称格式
+      filePattern: /logs/dialogue_1.log.%d{yyyy-MM-dd}-%i
+      #节点：指定滚动日志的策略，就是什么时候进行新建日志文件输出日志
+      Policies:
+        #节点：基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am
+        TimeBasedTriggeringPolicy:
+          interval: 1
+          modulate: true
+        #节点：基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小
+        SizeBasedTriggeringPolicy:
+          size: 20KB
+      #节点：用来指定同一个文件夹下最多有几个日志文件时开始删除最旧的，创建新的(通过max属性)
+      DefaultRolloverStrategy:
+        #属性：如果设置为max(默认值)，索引高的文件将比索引小的文件更新。如果设置为“min”，文件重命名和计数器将遵循上面描述的固定窗口策略
+        fileIndex: max
+        #计数器的最大值。一旦达到这个值，较旧的存档将在后续滚动时删除。缺省值是7
+        max: 10
+        #设置压缩级别，0-9，其中0 = none, 1 =最佳速度，到9 =最佳压缩。仅对ZIP文件实现
+        compressionLevel: 7
+  #节点：常见的有两种:Root和Logger
+  Loggers:
+    logger:
+      #日志输出级别，共有8个级别，按照从低到高为：All < Trace < Debug < Info < Warn < Error < Fatal < OFF
+      level: info
+      #用来指定该Logger所适用的类或者类所在的包全路径,继承自Root节点
+      name: com.zaiji
+      #指定该日志输出到哪个Appender
+      AppenderRef:
+        ref: ConsoleAppender
+      #日志不向上传递
+      additivity: false
+    #节点：指定项目的根日志，如果没有单独指定Logger，那么就会默认使用该Root日志输出
+    Root:
+      #日志输出级别，共有8个级别，按照从低到高为：All < Trace < Debug < Info < Warn < Error < Fatal < OFF
+      level: info
+      #指定该日志输出到哪个Appender
+      AppenderRef:
+        ref: ConsoleAppender
