@@ -41,9 +41,14 @@ public class ConfigEntity {
     private String fileRollingSizeUnit;
 
     /**
-     * 日志文件压缩数量
+     * 日志文件最大保留数量
      */
     private String fileNum;
+
+    /**
+     *log4j2监测配置文件修改时间间隔，单位为秒
+     * */
+    private String detectionChangeInterval;
 
     /**
      * log4j2本身日志级别
@@ -119,6 +124,15 @@ public class ConfigEntity {
 
     public ConfigEntity setLog4j2LogLevel(LogLevel log4j2LogLevel) {
         this.log4j2LogLevel = log4j2LogLevel;
+        return this;
+    }
+
+    public String getDetectionChangeInterval() {
+        return detectionChangeInterval;
+    }
+
+    public ConfigEntity setDetectionChangeInterval(String detectionChangeInterval) {
+        this.detectionChangeInterval = detectionChangeInterval;
         return this;
     }
 }

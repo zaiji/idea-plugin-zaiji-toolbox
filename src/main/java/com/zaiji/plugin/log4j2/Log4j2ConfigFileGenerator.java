@@ -5,6 +5,7 @@ import com.zaiji.plugin.log4j2.entity.ConfigEntity;
 import com.zaiji.plugin.log4j2.entity.LogFileType;
 import com.zaiji.plugin.log4j2.entity.LogLevel;
 import com.zaiji.plugin.util.ErrorInfoUtil;
+import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -14,7 +15,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.*;
 import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -36,6 +36,7 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
     private JRadioButton xmlTypeRadioBtn;
     private JRadioButton ymlTypeRadioBtn;
     private JButton 生成Button;
+    private JTextField a30TextField;
     private ButtonGroup log4j2LogLevelBtnGroup;
     private ButtonGroup logLevelBtnGroup;
 
@@ -64,34 +65,57 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
     private String generatorXmlConfig(ConfigEntity configInfo) {
         //创建document对象
         Document document = DocumentHelper.createDocument();
-        //创建根节点Configuration
+        //-----------------创建根节点Configuration
         Element configuration = document.addElement("Configuration");
+        //***注释
+        configuration.addComment("Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出;monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数");
+        //***属性
         configuration.addAttribute("status", configInfo.getLog4j2LogLevel().toString().toUpperCase());
+        configuration.addAttribute("monitorInterval", configInfo.getDetectionChangeInterval());
 
-        //生成properties节点，统一配置
+        //-----------------生成properties节点，统一配置-----------------
         final Element properties = configuration.addElement("Properties");
-        //配置-文件名
+        //***注释
+        properties.addComment("统一配置属性");
+
+        //子节点-日志名
         final Element propertyLogFileName = properties.addElement("Property");
+        //***注释
+        propertyLogFileName.addComment("滚动文件名");
+        //***属性-内容
         propertyLogFileName.addAttribute("name", "LOG_FILE");
         propertyLogFileName.setText("log/" + configInfo.getLogFileName());
 
-        //配置-日志前缀
+        //子节点-日志匹配内容
         final Element propertyLogPattern = properties.addElement("Property");
+        //***注释
+        propertyLogPattern.addComment("日志输出格式匹配");
+        //***属性-内容
         propertyLogPattern.addAttribute("name", "LOG_PATTERN");
         propertyLogPattern.setText(LOG_PATTERN);
 
-        //生成appenders节点，定义不同的输出
+        //-----------------生成appenders节点，定义不同的输出-----------------
         final Element appenders = configuration.addElement("Appenders");
-        //控制台输出
+        //***注释
+        appenders.addComment("输出节点定义");
+
+        //子节点-控制台输出
         final Element appenderConsole = appenders.addElement("Console");
+        //***注释
+        appenderConsole.addComment("控制台输出");
+        //***属性
         appenderConsole.addAttribute("name", "Console");
         appenderConsole.addAttribute("target", "SYSTEM_OUT");
         appenderConsole.addAttribute("follow", "true");
+        //日志输出格式
         final Element patternLayout1 = appenderConsole.addElement("PatternLayout");
         patternLayout1.addAttribute("pattern", "${LOG_PATTERN}");
 
-        //滚动文件输出
+        //子节点-滚动文件输出
         final Element appenderRollingFile = appenders.addElement("RollingFile");
+        //***注释
+        appenderRollingFile.addComment("滚动文件输出；append:每次输出是否覆盖文件，还是追加");
+        //***属性
         appenderRollingFile.addAttribute("name", "RollingFile");
         appenderRollingFile.addAttribute("fileName", "${LOG_FILE}");
         appenderRollingFile.addAttribute("append", "true");
@@ -99,10 +123,14 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
         final Element patternLayout2 = appenderRollingFile.addElement("PatternLayout");
         patternLayout2.addAttribute("pattern", "${LOG_PATTERN}");
         final Element sizeBasedTriggeringPolicy = appenderRollingFile.addElement("SizeBasedTriggeringPolicy");
+        sizeBasedTriggeringPolicy.addComment("基于文件大小的滚动");
         sizeBasedTriggeringPolicy.addAttribute("size", configInfo.getFileRollingSize() + configInfo.getFileRollingSizeUnit());
 
-        //生成loggers节点，定义实际输出
+        //-----------------生成loggers节点，定义实际输出-----------------
         final Element loggers = configuration.addElement("Loggers");
+        //***注释
+        loggers.addComment("日志实际输出配置");
+        //***属性-子节点
         final Element root = loggers.addElement("Root");
         root.addAttribute("level", configInfo.getLogLevel().toString().toUpperCase());
         final Element appenderRefRollingFile = root.addElement("AppenderRef");
@@ -152,7 +180,7 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
         rollingFile.put("name", "RollingFile");
         rollingFile.put("fileName", "log/" + configInfo.getLogFileName());
         Map<String, Object> patternLayout2 = new HashMap<>();
-        patternLayout2.put("Pattern", LOG_PATTERN.replaceAll(" - "," \\- "));
+        patternLayout2.put("Pattern", LOG_PATTERN.replaceAll(" - ", " \\- "));
         rollingFile.put("PatternLayout", patternLayout2);
         rollingFile.put("filePattern", "log/$${date:yyyy-MM}/" + configInfo.getLogFileName() + "-%d{MM-dd-yyyy}-%i.log.gz");
         Map<String, Object> policies = new HashMap<>();
@@ -180,7 +208,7 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
         }
         Yaml yaml = new Yaml();
         final HashMap<Object, Object> result = new HashMap<>(3);
-        result.put("Configuration",configuration);
+        result.put("Configuration", configuration);
         return yaml.dump(result);
     }
 
