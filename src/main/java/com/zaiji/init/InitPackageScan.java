@@ -3,7 +3,6 @@ package com.zaiji.init;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.extensions.PluginId;
-import com.zaiji.annotation.DefaultComponent;
 import com.zaiji.annotation.PluginComponentInfo;
 import com.zaiji.entity.ComponentInfo;
 
@@ -94,7 +93,6 @@ public class InitPackageScan {
                     //判断是否是组件
                     final PluginComponentInfo pluginComponentInfo = clazz.getAnnotation(PluginComponentInfo.class);
                     boolean isComponent = Objects.nonNull(pluginComponentInfo);
-                    boolean isDefaultComponent = Objects.nonNull(clazz.getAnnotation(DefaultComponent.class));
                     if (isComponent) {
                         final String name = pluginComponentInfo.name();
                         //指定方法
@@ -106,7 +104,7 @@ public class InitPackageScan {
                             componentInfo.setClassName(className)
                                     .setClazz(clazz)
                                     .setComponentName(name)
-                                    .setDefaultComponent(isDefaultComponent);
+                                    .setDefaultComponent(pluginComponentInfo.defaultComponent());
                             componentInfos.add(componentInfo);
                         }
                     }

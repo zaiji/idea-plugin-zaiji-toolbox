@@ -2,7 +2,6 @@ package com.zaiji.plugin.date;
 
 import com.nlf.calendar.Lunar;
 import com.zaiji.annotation.PluginComponentInfo;
-import com.zaiji.annotation.DefaultComponent;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
@@ -14,9 +13,9 @@ import java.util.concurrent.*;
  *
  * @author zaiji
  */
+//todo:
 
-@PluginComponentInfo(name = "时间相关工具类")
-@DefaultComponent
+@PluginComponentInfo(name = "时间相关工具类", defaultComponent = true)
 public class DateUtil {
     private JTextField textField1;
     private JRadioButton 秒RadioButton;

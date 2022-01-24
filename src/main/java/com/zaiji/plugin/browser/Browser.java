@@ -11,8 +11,9 @@ import java.awt.*;
  *
  * @author zaiji
  */
-
+//todo:
 //@PluginComponentInfo(name = "浏览器")
+
 public class Browser {
     private JPanel mainPane;
 

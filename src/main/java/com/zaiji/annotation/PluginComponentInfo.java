@@ -16,4 +16,9 @@ public @interface PluginComponentInfo {
      * 组件名
      */
     String name();
+
+    /**
+     * 是否为默认组件
+     */
+    boolean defaultComponent() default false;
 }
