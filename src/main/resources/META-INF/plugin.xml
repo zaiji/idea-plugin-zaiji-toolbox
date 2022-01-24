@@ -10,7 +10,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.zaiji.plugin.MainToolWindow"
+        <toolWindow factoryClass="com.zaiji.MainToolWindow"
                     id="仔鸡的工具箱"
                     canCloseContents="false" anchor="bottom">
         </toolWindow>

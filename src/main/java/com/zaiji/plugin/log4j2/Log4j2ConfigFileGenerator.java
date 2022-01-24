@@ -1,11 +1,10 @@
 package com.zaiji.plugin.log4j2;
 
-import com.zaiji.plugin.BaseComponentClass;
+import com.zaiji.annotation.PluginComponentInfo;
 import com.zaiji.plugin.log4j2.entity.ConfigEntity;
 import com.zaiji.plugin.log4j2.entity.LogFileType;
 import com.zaiji.plugin.log4j2.entity.LogLevel;
-import com.zaiji.plugin.util.ErrorInfoUtil;
-import org.dom4j.Comment;
+import com.zaiji.util.ErrorInfoUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,7 +17,14 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Log4j2ConfigFileGenerator extends BaseComponentClass {
+/**
+ * log4j2配置文件快速生成
+ *
+ * @author zaiji
+ */
+
+@PluginComponentInfo(name = "log4j2配置文件快速生成")
+public class Log4j2ConfigFileGenerator {
     private JTextArea resultTextArea;
     private JRadioButton withConsoleRadioBtn;
     private JRadioButton withoutConsoleRadioBtn;
@@ -256,8 +262,7 @@ public class Log4j2ConfigFileGenerator extends BaseComponentClass {
         return null;
     }
 
-    @Override
-    protected JPanel getContent() {
+    public JPanel getContent() {
         return mainJPane;
     }
 }

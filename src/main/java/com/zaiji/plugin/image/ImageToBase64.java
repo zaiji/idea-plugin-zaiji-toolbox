@@ -1,8 +1,8 @@
 package com.zaiji.plugin.image;
 
 import com.intellij.ui.components.JBScrollPane;
-import com.zaiji.plugin.BaseComponentClass;
-import com.zaiji.plugin.util.ErrorInfoUtil;
+import com.zaiji.annotation.PluginComponentInfo;
+import com.zaiji.util.ErrorInfoUtil;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
  * @author zaiji
  */
 
-public class ImageToBase64 extends BaseComponentClass {
+@PluginComponentInfo(name = "图片Base64转换")
+public class ImageToBase64 {
     private JPanel panel1;
     private JPanel base64ToPicJpane;
     private JPanel picToBase64Jpane;
@@ -85,8 +86,7 @@ public class ImageToBase64 extends BaseComponentClass {
         });
     }
 
-    @Override
-    protected JPanel getContent() {
+    public JPanel getContent() {
         return panel1;
     }
 }

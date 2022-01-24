@@ -1,7 +1,7 @@
 package com.zaiji.plugin.maven;
 
-import com.zaiji.plugin.BaseComponentClass;
-import com.zaiji.plugin.util.ErrorInfoUtil;
+import com.zaiji.annotation.PluginComponentInfo;
+import com.zaiji.util.ErrorInfoUtil;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
@@ -12,7 +12,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class MvnInstallGeneratorToolBox extends BaseComponentClass {
+/**
+ * maven安装
+ *
+ * @author zaiji
+ */
+
+@PluginComponentInfo(name = "mvn install")
+public class MvnInstallGeneratorToolBox {
     private JPanel panel1;
     private JButton buttonGeneratorPom;
     private JTextArea infoPomTextArea;
@@ -75,8 +82,7 @@ public class MvnInstallGeneratorToolBox extends BaseComponentClass {
         return element.element(elementName);
     }
 
-    @Override
-    protected JPanel getContent() {
+    public JPanel getContent() {
         return panel1;
     }
 

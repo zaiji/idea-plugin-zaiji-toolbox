@@ -1,4 +1,4 @@
-package com.zaiji.plugin.util;
+package com.zaiji.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

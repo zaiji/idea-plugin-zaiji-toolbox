@@ -1,4 +1,4 @@
-package com.zaiji.plugin;
+package com.zaiji;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -6,16 +6,11 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.zaiji.plugin.image.ImageToBase64;
-import com.zaiji.plugin.log4j2.Log4j2ConfigFileGenerator;
-import com.zaiji.plugin.maven.MvnInstallGeneratorToolBox;
+import com.zaiji.init.InitRegisterComponent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * 工具箱主页面
@@ -26,12 +21,6 @@ import java.util.Map;
 
 public class MainToolWindow implements ToolWindowFactory {
 
-    private final static Map<String, Class<? extends BaseComponentClass>> COMPONENTS = new HashMap<>(20) {{
-        put("图片Base64转换", ImageToBase64.class);
-        put("mvn install", MvnInstallGeneratorToolBox.class);
-        put("log4j2配置文件快速生成", Log4j2ConfigFileGenerator.class);
-    }};
-
     /**
      * 主工具箱布局
      */
@@ -40,10 +29,8 @@ public class MainToolWindow implements ToolWindowFactory {
         private final JPanel mainJpanel;
         private final Box leftMenuJpanel;
         private final JPanel rightContentJpanel;
-        private final LinkedList<JPanel> panelList = new LinkedList<>();
 
         public MainToolWindowLayOut() {
-
             mainJpanel = new JPanel();
             mainJpanel.setLayout(new BorderLayout());
             leftMenuJpanel = Box.createVerticalBox();
@@ -57,28 +44,7 @@ public class MainToolWindow implements ToolWindowFactory {
         }
 
         private void init() {
-            COMPONENTS.forEach((key, value) -> {
-                try {
-                    final JButton jButton = new JButton(key);
-                    final BaseComponentClass baseComponentClass = value.getDeclaredConstructor().newInstance();
-                    final JPanel content = baseComponentClass.getContent();
-                    content.setVisible(false);
-                    final Box horizontalBox = Box.createHorizontalBox();
-                    horizontalBox.add(jButton);
-                    panelList.add(content);
-                    jButton.addActionListener(aaa -> {
-                        panelList.forEach(e -> e.setVisible(false));
-                        rightContentJpanel.add(content, BorderLayout.CENTER);
-                        content.setVisible(true);
-                        rightContentJpanel.updateUI();
-                    });
-
-                    leftMenuJpanel.add(horizontalBox);
-                } catch (Exception e) {
-                    System.out.println("组件：【" + key + "】初始化失败！" + e.getMessage());
-                    e.printStackTrace();
-                }
-            });
+            InitRegisterComponent.registerAllComponent("com.zaiji", leftMenuJpanel, rightContentJpanel);
             leftMenuJpanel.updateUI();
             rightContentJpanel.updateUI();
         }
