@@ -213,4 +213,14 @@
       </tabbedpane>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="secondToDateUnitBtnGroup">
+      <member id="c167e"/>
+      <member id="3d1c8"/>
+    </group>
+    <group name="dateToSecondUnitBtnGroup">
+      <member id="638ce"/>
+      <member id="4b04f"/>
+    </group>
+  </buttonGroups>
 </form>
