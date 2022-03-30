@@ -34,6 +34,9 @@ public class DateUtil {
     private JLabel nowDateTimeTextLabel;
     private JPanel mainPane;
     private JTextPane lunarTextPane;
+    private JTextField textField5;
+    private JTextField textField6;
+    private JButton 新增Button;
 
     //定时任务
     final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
