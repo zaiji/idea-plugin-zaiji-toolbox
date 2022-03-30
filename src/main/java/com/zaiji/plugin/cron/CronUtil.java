@@ -18,6 +18,15 @@ public class CronUtil {
     private JTextField textField6;
     private JButton 反解析到UIButton;
     private JTextArea textArea1;
+    private JRadioButton 每秒允许的通配符RadioButton;
+    private JRadioButton radioButton2;
+    private JRadioButton radioButton3;
+    private JRadioButton 指定RadioButton;
+    private JCheckBox a00CheckBox;
+    private JSpinner spinner1;
+    private JSpinner spinner2;
+    private JSpinner spinner3;
+    private JSpinner spinner4;
 
     public JPanel getContent() {
         return mainPane;
