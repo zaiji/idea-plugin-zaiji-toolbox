@@ -2,11 +2,15 @@ package com.zaiji.plugin.date;
 
 import com.nlf.calendar.Lunar;
 import com.zaiji.annotation.PluginComponentInfo;
+import com.zaiji.util.ErrorInfoUtil;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.*;
@@ -20,23 +24,24 @@ import java.util.concurrent.*;
 
 @PluginComponentInfo(name = "时间相关工具类", defaultComponent = true)
 public class DateUtil {
-    private JTextField textField1;
-    private JRadioButton 秒RadioButton;
-    private JRadioButton 毫秒RadioButton;
-    private JTextField textField2;
-    private JRadioButton 秒RadioButton1;
-    private JRadioButton 毫秒RadioButton1;
-    private JButton 转换Button1;
-    private JButton 转换Button;
-    private JTextField textField3;
-    private JTextField textField4;
+    private JTextField td_param;
+    private JRadioButton td_radio_second;
+    private JRadioButton td_radio_milli;
+    private JTextField dt_param;
+    private JRadioButton dt_radio_second;
+    private JRadioButton dt_radio_milli;
+    private JButton td_button;
+    private JButton dt_button;
+    private JTextField td_result;
+    private JTextField dt_result;
     private JTabbedPane tabbedPane1;
     private JLabel nowDateTimeTextLabel;
     private JPanel mainPane;
     private JTextPane lunarTextPane;
-    private JTextField textField5;
-    private JTextField textField6;
-    private JButton 新增Button;
+    private JTextField countdown_title;
+    private JTextField countdown_time;
+    private JButton countdown_button;
+    private JPanel countdown_pane;
 
     //定时任务
     final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
@@ -51,7 +56,7 @@ public class DateUtil {
 
             //时间定时任务
             scheduledExecutorService.scheduleAtFixedRate(() -> {
-                String printTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                String printTime = new SimpleDateFormat(DATE_FORMAT_PATTERN).format(new Date());
                 nowDateTimeTextLabel.setText(printTime);
             }, 0, 1000, TimeUnit.MILLISECONDS);
 
@@ -92,6 +97,69 @@ public class DateUtil {
 
     }
 
+
+    private final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    public DateUtil() {
+        td_button.addActionListener(e -> {
+            try {
+                Long timeStamp = 0L;
+                if (td_radio_second.isSelected()) {
+                    timeStamp = Long.parseLong(td_param.getText() + "000");
+                } else if (td_radio_milli.isSelected()) {
+                    timeStamp = Long.parseLong(td_param.getText());
+                }
+                td_result.setText(new SimpleDateFormat(DATE_FORMAT_PATTERN).format(new Date(timeStamp)));
+            } catch (Exception exception) {
+                final String s = ErrorInfoUtil.outPrintStack(exception);
+                td_result.setText(s);
+            }
+        });
+        dt_button.addActionListener(e -> {
+            try {
+                Long timeStamp = 0L;
+                final Date parse = new SimpleDateFormat(DATE_FORMAT_PATTERN).parse(dt_param.getText());
+                if (dt_radio_second.isSelected()) {
+                    timeStamp = parse.getTime() / 1000;
+                } else if (dt_radio_milli.isSelected()) {
+                    timeStamp = parse.getTime();
+                }
+                dt_result.setText(String.valueOf(timeStamp));
+            } catch (Exception exception) {
+                final String s = ErrorInfoUtil.outPrintStack(exception);
+                dt_result.setText(s);
+            }
+        });
+
+
+        countdown_button.addActionListener(e -> {
+            try {
+                final String title = countdown_title.getText();
+                final Date deaLine = new SimpleDateFormat(DATE_FORMAT_PATTERN).parse(countdown_time.getText());
+                if (deaLine.getTime() <= new Date().getTime()) {
+                    countdown_time.setText("结束时间不得早于当前时间");
+                    return;
+                }
+                final JPanel jPanel = new JPanel();
+                final JLabel jLabel = new JLabel();
+                jPanel.setLayout(new GridLayout());
+                jPanel.add(jLabel, BorderLayout.CENTER);
+                final GridLayout gridLayout = new GridLayout(0, 1);
+                countdown_pane.setLayout(gridLayout);
+                countdown_pane.add(jPanel, 0, 0);
+                countdown_pane.updateUI();
+                scheduledExecutorService.scheduleAtFixedRate(() -> {
+                    Long leftTime = (deaLine.getTime() - new Date().getTime()) / 1000;
+                    String printTime = "【" + title + "】剩余时间：" + leftTime + "秒";
+                    jLabel.setText(printTime);
+                }, 0, 1000, TimeUnit.MILLISECONDS);
+
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                countdown_time.setText(ErrorInfoUtil.outPrintStack(exception));
+            }
+        });
+    }
 
     public JPanel getContent() {
         return mainPane;
