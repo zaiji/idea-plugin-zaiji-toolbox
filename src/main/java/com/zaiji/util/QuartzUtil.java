@@ -1,7 +1,6 @@
 package com.zaiji.util;
 
 
-import org.apache.lucene.util.SetOnce;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -80,7 +79,7 @@ public final class QuartzUtil {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger" + UUID.randomUUID(), "period_trigger_group")
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(changTimeToSecond(period, periodUnit))
+                        .withIntervalInMilliseconds(changTimeToMilliseconds(period, periodUnit))
                         .repeatForever())
                 .endAt(endTime)
                 .build();
@@ -112,9 +111,9 @@ public final class QuartzUtil {
     public static void executeByPeriodWithEndTime(Class<? extends Job> job, Integer period, TimeUnit periodUnit, Integer waitTime, TimeUnit waitUnit, Date endTime) {
         //定义一个触发器
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger" + UUID.randomUUID(), "period_trigger_group")
-                .startAt(new Date(new Date().getTime() + (changTimeToSecond(waitTime, waitUnit) * 1000L)))
+                .startAt(new Date(new Date().getTime() + changTimeToMilliseconds(waitTime, waitUnit)))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(changTimeToSecond(period, periodUnit))
+                        .withIntervalInMilliseconds(changTimeToMilliseconds(period, periodUnit))
                         .repeatForever())
                 .endAt(endTime)
                 .build();
@@ -177,35 +176,35 @@ public final class QuartzUtil {
      * @param timeUnit 时间单位
      * @return 秒数
      */
-    private static int changTimeToSecond(Integer time, TimeUnit timeUnit) {
+    private static int changTimeToMilliseconds(Integer time, TimeUnit timeUnit) {
         time = Objects.nonNull(time) ? time : 0;
         switch (timeUnit) {
-            case NANOSECONDS: {
-                time /= (1000 * 1000 * 1000);
-                break;
-            }
-            case MICROSECONDS: {
-                time /= (1000 * 1000);
-                break;
-            }
-            case MILLISECONDS: {
-                time /= 1000;
-                break;
-            }
-            case SECONDS: {
-                time *= 1;
-                break;
-            }
-            case MINUTES: {
-                time *= 60;
+            case DAYS: {
+                time *= 24 * 60 * 60 * 1000;
                 break;
             }
             case HOURS: {
-                time *= 60 * 60;
+                time *= 60 * 60 * 1000;
                 break;
             }
-            case DAYS: {
-                time *= 24 * 60 * 60;
+            case MINUTES: {
+                time *= 60 * 1000;
+                break;
+            }
+            case SECONDS: {
+                time *= 1000;
+                break;
+            }
+            case MILLISECONDS: {
+                time *= 1;
+                break;
+            }
+            case MICROSECONDS: {
+                time /= 1000;
+                break;
+            }
+            case NANOSECONDS: {
+                time /= 1000 * 1000;
                 break;
             }
             default:
