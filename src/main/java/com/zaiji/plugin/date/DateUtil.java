@@ -19,7 +19,6 @@ import java.util.concurrent.*;
  *
  * @author zaiji
  */
-//todo:
 
 @PluginComponentInfo(name = "时间相关工具类", defaultComponent = true)
 public class DateUtil {
@@ -136,19 +135,29 @@ public class DateUtil {
                 }
                 final JPanel jPanel = new JPanel();
                 final JLabel jLabel = new JLabel();
-                jPanel.setLayout(new GridLayout());
+                final JButton removeButton = new JButton("移除");
+                jPanel.setLayout(new BorderLayout());
                 jPanel.add(jLabel, BorderLayout.CENTER);
+                jPanel.add(removeButton, BorderLayout.EAST);
                 final GridLayout gridLayout = new GridLayout(0, 1);
+
                 countdown_pane.setLayout(gridLayout);
                 countdown_pane.add(jPanel, 0, 0);
                 countdown_pane.updateUI();
 
-                jLabel.setText("【" + title + "】剩余时间：" + getCountdownString(deaLine));
-                ScheduleUtil.executeByPeriodWithEndTime(() -> {
+                //定时任务
+                final ScheduledFuture<?> scheduledFuture = ScheduleUtil.executeByPeriodWithEndTime(() -> {
                     final Date tempDeadline = deaLine;
                     jLabel.setText("【" + title + "】剩余时间：" + getCountdownString(tempDeadline));
                 }, 500, TimeUnit.MILLISECONDS, deaLine);
-                
+
+                //移除按钮的点击事件
+                removeButton.addActionListener(eee -> {
+                    if (!scheduledFuture.isCancelled()) {
+                        scheduledFuture.cancel(true);
+                    }
+                    countdown_pane.remove(jPanel);
+                });
             } catch (Exception exception) {
                 exception.printStackTrace();
                 countdown_time.setText(ErrorInfoUtil.outPrintStack(exception));

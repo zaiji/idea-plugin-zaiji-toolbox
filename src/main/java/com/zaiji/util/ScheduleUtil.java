@@ -26,9 +26,10 @@ public final class ScheduleUtil {
      * @param job        定时任务类
      * @param period     定时周期
      * @param periodUnit 定时周期时间单位
+     * @return 定时任务对象
      */
-    public static void executeByPeriod(Runnable job, Integer period, TimeUnit periodUnit) {
-        executeByPeriodWithEndTime(job, period, periodUnit, null);
+    public static ScheduledFuture<?> executeByPeriod(Runnable job, Integer period, TimeUnit periodUnit) {
+        return executeByPeriodWithEndTime(job, period, periodUnit, null);
     }
 
     /**
@@ -39,9 +40,10 @@ public final class ScheduleUtil {
      * @param periodUnit 定时周期时间单位
      * @param waitTime   等待时长
      * @param waitUnit   等待时长时间单位
+     * @return 定时任务对象
      */
-    public static void executeByPeriod(Runnable job, Integer period, TimeUnit periodUnit, Integer waitTime, TimeUnit waitUnit) {
-        executeByPeriodWithEndTime(job, period, periodUnit, waitTime, waitUnit, null);
+    public static ScheduledFuture<?> executeByPeriod(Runnable job, Integer period, TimeUnit periodUnit, Integer waitTime, TimeUnit waitUnit) {
+        return executeByPeriodWithEndTime(job, period, periodUnit, waitTime, waitUnit, null);
     }
 
     /**
@@ -51,8 +53,9 @@ public final class ScheduleUtil {
      * @param period     定时周期
      * @param periodUnit 定时周期时间单位
      * @param endTime    结束时间
+     * @return 定时任务对象
      */
-    public static void executeByPeriodWithEndTime(Runnable job, Integer period, TimeUnit periodUnit, Date endTime) {
+    public static ScheduledFuture<?> executeByPeriodWithEndTime(Runnable job, Integer period, TimeUnit periodUnit, Date endTime) {
 
         final ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(job, 0, period, periodUnit);
 
@@ -60,7 +63,7 @@ public final class ScheduleUtil {
             //定义一个关闭定时任务的定时任务
             scheduledExecutorService.schedule(() -> scheduledFuture.cancel(true), (endTime.getTime() - new Date().getTime()), TimeUnit.MILLISECONDS);
         }
-
+        return scheduledFuture;
     }
 
     /**
@@ -72,8 +75,9 @@ public final class ScheduleUtil {
      * @param waitTime   等待时长
      * @param waitUnit   等待时长时间单位
      * @param endTime    结束时间
+     * @return 定时任务对象
      */
-    public static void executeByPeriodWithEndTime(Runnable job, Integer period, TimeUnit periodUnit, Integer waitTime, TimeUnit waitUnit, Date endTime) {
+    public static ScheduledFuture<?> executeByPeriodWithEndTime(Runnable job, Integer period, TimeUnit periodUnit, Integer waitTime, TimeUnit waitUnit, Date endTime) {
 
         final ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(job, changTimeToMilliseconds(waitTime, waitUnit, periodUnit), period, periodUnit);
 
@@ -82,45 +86,8 @@ public final class ScheduleUtil {
             scheduledExecutorService.schedule(() -> scheduledFuture.cancel(true), (endTime.getTime() - new Date().getTime()), TimeUnit.MILLISECONDS);
         }
 
+        return scheduledFuture;
     }
-
-    /**
-     * 根据cron表达式执行任务
-     *
-     * @param job  定时任务类
-     * @param cron cron表达式
-     */
-//    public static void executeByCron(Class<? extends Job> job, String cron) {
-//        executeByCronWithEndTime(job, cron, null);
-//    }
-
-    /**
-     * 根据cron表达式执行任务，等到当前时间>endTime之后停止执行
-     *
-     * @param job     定时任务
-     * @param cron    cron表达式
-     * @param endTime 结束时间
-     */
-//    public static void executeByCronWithEndTime(Class<? extends Job> job, String cron, Date endTime) {
-//        //定义一个触发器
-//        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger" + UUID.randomUUID(), "cron_trigger_group")
-//                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
-//                .endAt(endTime)
-//                .build();
-//
-//        //定义一个任务
-//        JobDetail tjob = JobBuilder.newJob(job)
-//                .withIdentity("job" + UUID.randomUUID(), "cron_job_group")
-//                .build();
-//
-//
-//        try {
-//            SCHEDULER.scheduleJob(tjob, trigger);
-//            SCHEDULER.start();
-//        } catch (SchedulerException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /**
      * 将一个单位的时间转换成另一个单位的时间
