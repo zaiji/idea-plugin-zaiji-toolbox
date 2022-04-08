@@ -4,7 +4,7 @@ import com.zaiji.annotation.PluginComponentInfo;
 
 import javax.swing.*;
 
-@PluginComponentInfo(name = "cron表达式工具类")
+//@PluginComponentInfo(name = "cron表达式工具类")
 public class CronUtil {
 
 
