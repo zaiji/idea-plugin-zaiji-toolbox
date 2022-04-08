@@ -3,14 +3,13 @@ package com.zaiji.plugin.date;
 import com.nlf.calendar.Lunar;
 import com.zaiji.annotation.PluginComponentInfo;
 import com.zaiji.util.ErrorInfoUtil;
+import com.zaiji.util.ScheduleUtil;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.*;
@@ -43,9 +42,6 @@ public class DateUtil {
     private JButton countdown_button;
     private JPanel countdown_pane;
 
-    //定时任务
-    final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-
     {
         try {
             //textpane文本居中
@@ -55,12 +51,12 @@ public class DateUtil {
             doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
             //时间定时任务
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
+            ScheduleUtil.executeByPeriod(() -> {
                 String printTime = new SimpleDateFormat(DATE_FORMAT_PATTERN).format(new Date());
                 nowDateTimeTextLabel.setText(printTime);
-            }, 0, 1000, TimeUnit.MILLISECONDS);
+            }, 500, TimeUnit.MILLISECONDS);
 
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
+            ScheduleUtil.executeByPeriod(() -> {
                 //农历定时任务
                 final Lunar lunar = Lunar.fromDate(new Date());
                 StringBuilder s = new StringBuilder();
@@ -86,10 +82,8 @@ public class DateUtil {
                 s.append("星期");
                 s.append(lunar.getWeekInChinese());
 
-
                 lunarTextPane.setText(s.toString());
-            }, 0, 1000, TimeUnit.MILLISECONDS);
-
+            }, 1, TimeUnit.MINUTES);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,12 +142,13 @@ public class DateUtil {
                 countdown_pane.setLayout(gridLayout);
                 countdown_pane.add(jPanel, 0, 0);
                 countdown_pane.updateUI();
-                scheduledExecutorService.scheduleAtFixedRate(() -> {
-                    Long leftTime = (deaLine.getTime() - new Date().getTime()) / 1000;
-                    String printTime = "【" + title + "】剩余时间：" + leftTime + "秒";
-                    jLabel.setText(printTime);
-                }, 0, 1000, TimeUnit.MILLISECONDS);
 
+                jLabel.setText("【" + title + "】剩余时间：" + getCountdownString(deaLine));
+                ScheduleUtil.executeByPeriodWithEndTime(() -> {
+                    final Date tempDeadline = deaLine;
+                    jLabel.setText("【" + title + "】剩余时间：" + getCountdownString(tempDeadline));
+                }, 500, TimeUnit.MILLISECONDS, deaLine);
+                
             } catch (Exception exception) {
                 exception.printStackTrace();
                 countdown_time.setText(ErrorInfoUtil.outPrintStack(exception));
@@ -161,7 +156,25 @@ public class DateUtil {
         });
     }
 
+    private static String getCountdownString(Date deadline) {
+        Long leftTime = deadline.getTime() - new Date().getTime();
+
+        long day = leftTime / (24 * 60 * 60 * 1000);
+        leftTime -= day * 24 * 60 * 60 * 1000;
+
+        long hours = leftTime / (60 * 60 * 1000);
+        leftTime -= hours * 60 * 60 * 1000;
+
+        long minutes = leftTime / (60 * 1000);
+        leftTime -= minutes * 60 * 1000;
+
+        long seconds = leftTime / 1000;
+
+        return day + " 天 " + hours + " 小时 " + minutes + " 分 " + seconds + " 秒 ";
+    }
+
     public JPanel getContent() {
         return mainPane;
     }
+
 }
